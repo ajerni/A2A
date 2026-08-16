@@ -1,8 +1,11 @@
-"""Bare-minimum A2A client.
+"""Minimal A2A client.
 
     uv run python A2A/client.py
     uv run python A2A/client.py Hello from A2A
-    A2A_URL=https://example.com uv run python A2A/client.py Hello from A2A
+
+    or
+
+    A2A_URL=https://learn-a2a.com uv run python A2A/client.py Hello from A2A
 """
 
 import asyncio

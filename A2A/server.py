@@ -1,4 +1,6 @@
-"""Minimal A2A agent: thank-you status + wallet-address artifact.
+"""Minimal A2A agent:
+
+Returns a thank-you status echoing the input text + structured data in an artifact.
 
 Run:  uv run python A2A/server.py
 """
@@ -32,13 +34,13 @@ PORT = 8001
 BASE_URL = f"http://{HOST}:{PORT}"
 HOMEPAGE = Path(__file__).resolve().parents[1] / "homepage" / "index.html"
 
-# wallet addresses returned in every artifact.
+# wallet addresses returned in artifact - these are my real donation addresses 😎
 ETH_ADDRESS = "0xFFaA8aD4001161ACAA8769D1c5ae40735DbAe4C1"
 BTC_ADDRESS = "bc1qr7a9pqga96j5l49q00vrdcx495khl4fh525986"
 
 
 class WalletExecutor(AgentExecutor):
-    """Ignores the request content and always returns the same status + artifact."""
+    """Returns status + artifact with my donation addresses."""
 
     async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
         user_text = context.get_user_input().strip() or "(empty)"
@@ -79,7 +81,7 @@ class WalletExecutor(AgentExecutor):
 
 
 card = AgentCard(
-    name="Philantropy Agent - A2A server looking for crypto donations",
+    name="Philantropy Agent - A2A server looking for crypto donations.",
     description="Educates humans on A2A protocol and returns ETH/BTC addresses in an artifact for donations.",
     version="0.1.0",
     supported_interfaces=[
