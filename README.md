@@ -24,6 +24,13 @@ client.py  --discover AgentCard-->  server.py
 
 ## Setup
 
+Clone this repo into a folder on your local machine:
+
+```bash
+git clone https://github.com/ajerni/A2A.git
+```
+
+
 Once from the repo root (creates `.venv` and installs dependencies):
 
 ```bash
