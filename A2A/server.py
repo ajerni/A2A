@@ -38,7 +38,8 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8001"))
 BASE_URL = os.environ.get("BASE_URL", "http://localhost:8001")
-HOMEPAGE = Path(__file__).resolve().parents[1] / "homepage" / "index.html"
+HOMEDIR = Path(__file__).resolve().parents[1] / "homepage"
+HOMEPAGE = HOMEDIR / "index.html"
 
 # wallet addresses returned in artifact - these are my real donation addresses 😎
 ETH_ADDRESS = "0xFFaA8aD4001161ACAA8769D1c5ae40735DbAe4C1"
@@ -113,7 +114,17 @@ app = FastAPI()
 
 @app.get("/")
 async def homepage() -> FileResponse:
-    return FileResponse(HOMEPAGE)
+    return FileResponse(HOMEPAGE, media_type="text/html; charset=utf-8")
+
+
+@app.get("/robots.txt")
+async def robots() -> FileResponse:
+    return FileResponse(HOMEDIR / "robots.txt", media_type="text/plain")
+
+
+@app.get("/sitemap.xml")
+async def sitemap() -> FileResponse:
+    return FileResponse(HOMEDIR / "sitemap.xml", media_type="application/xml")
 
 
 for route in create_agent_card_routes(agent_card=card):

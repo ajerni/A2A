@@ -3,13 +3,95 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>A2A by example — the Agent2Agent protocol, without the overwhelm</title>
+    <title>Learn A2A — Agent2Agent protocol tutorial and live demo</title>
     <meta
       name="description"
-      content="A tiny, runnable Agent2Agent (A2A) demo for beginners. One server, one client, about 100 lines each."
+      content="Learn the Agent2Agent (A2A) protocol with a tiny live demo: one server, one client, about 100 lines each. A2A is becoming the industry standard for agent-to-agent communication."
     />
+    <meta
+      name="keywords"
+      content="A2A, Agent2Agent, A2A protocol, learn A2A, agent to agent communication, AI agents, A2A tutorial, A2A demo"
+    />
+    <meta name="author" content="ajerni" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="https://learn-a2a.com/" />
+    <link rel="alternate" hreflang="en" href="https://learn-a2a.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Learn A2A" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://learn-a2a.com/" />
+    <meta
+      property="og:title"
+      content="Learn A2A — Agent2Agent protocol tutorial and live demo"
+    />
+    <meta
+      property="og:description"
+      content="A beginner-friendly live demo of the Agent2Agent (A2A) protocol: one server, one client, one full round trip."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="Learn A2A — Agent2Agent protocol tutorial and live demo"
+    />
+    <meta
+      name="twitter:description"
+      content="Learn the A2A protocol with a tiny runnable demo. A2A is becoming the industry standard for agent-to-agent communication."
+    />
+    <meta name="theme-color" content="#080b12" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://learn-a2a.com/#website",
+            "name": "Learn A2A",
+            "url": "https://learn-a2a.com/",
+            "description": "Beginner-friendly tutorial and live demo of the Agent2Agent (A2A) protocol.",
+            "inLanguage": "en",
+            "publisher": {
+              "@type": "Person",
+              "name": "ajerni",
+              "url": "https://github.com/ajerni"
+            }
+          },
+          {
+            "@type": "LearningResource",
+            "@id": "https://learn-a2a.com/#tutorial",
+            "name": "Learn the Agent2Agent (A2A) protocol by example",
+            "url": "https://learn-a2a.com/",
+            "description": "A tiny live demo that teaches Agent2Agent discovery, SendMessage, tasks, and artifacts. A2A is becoming the industry standard for agent-to-agent communication.",
+            "learningResourceType": "tutorial",
+            "educationalLevel": "beginner",
+            "inLanguage": "en",
+            "isAccessibleForFree": true,
+            "teaches": [
+              "Agent2Agent protocol",
+              "A2A AgentCard discovery",
+              "A2A SendMessage",
+              "A2A tasks and artifacts"
+            ],
+            "about": {
+              "@type": "Thing",
+              "name": "Agent2Agent (A2A) protocol",
+              "sameAs": "https://a2a-protocol.org/"
+            }
+          }
+        ]
+      }
+    </script>
+    <script>
+      (function () {
+        document.documentElement.setAttribute(
+          "data-theme",
+          localStorage.getItem("theme") || "dark"
+        );
+      })();
+    </script>
     <style>
-      :root {
+      :root,
+      [data-theme="dark"] {
         --bg: #080b12;
         --bg-soft: #0e1420;
         --card: #121a28;
@@ -18,6 +100,28 @@
         --muted: #93a4bd;
         --accent: #5eead4;
         --accent-2: #818cf8;
+        --glow-1: rgba(94, 234, 212, 0.13);
+        --glow-2: rgba(129, 140, 248, 0.14);
+        --badge-bg: rgba(94, 234, 212, 0.07);
+        --btn-primary-fg: #07110f;
+        --dot: #33415c;
+        --toggle-bg: rgba(18, 26, 40, 0.85);
+      }
+      [data-theme="light"] {
+        --bg: #f4f7fb;
+        --bg-soft: #ffffff;
+        --card: #ffffff;
+        --line: #d5deea;
+        --text: #152033;
+        --muted: #5a6b82;
+        --accent: #0d9488;
+        --accent-2: #4f46e5;
+        --glow-1: rgba(13, 148, 136, 0.12);
+        --glow-2: rgba(79, 70, 229, 0.1);
+        --badge-bg: rgba(13, 148, 136, 0.1);
+        --btn-primary-fg: #ffffff;
+        --dot: #b8c4d6;
+        --toggle-bg: rgba(255, 255, 255, 0.9);
       }
       * {
         box-sizing: border-box;
@@ -32,6 +136,7 @@
         font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
+        transition: background 0.2s ease, color 0.2s ease;
       }
       body::before {
         content: "";
@@ -39,8 +144,8 @@
         inset: 0;
         pointer-events: none;
         background:
-          radial-gradient(50rem 30rem at 15% -10%, rgba(94, 234, 212, 0.13), transparent 60%),
-          radial-gradient(45rem 28rem at 90% 5%, rgba(129, 140, 248, 0.14), transparent 60%);
+          radial-gradient(50rem 30rem at 15% -10%, var(--glow-1), transparent 60%),
+          radial-gradient(45rem 28rem at 90% 5%, var(--glow-2), transparent 60%);
       }
       .wrap {
         position: relative;
@@ -56,6 +161,43 @@
         font-size: 0.9em;
       }
 
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 20;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--toggle-bg);
+        color: var(--text);
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        transition: border-color 0.15s ease, transform 0.15s ease;
+      }
+      .theme-toggle:hover {
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
+      .theme-toggle svg {
+        width: 1.15rem;
+        height: 1.15rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      [data-theme="dark"] .theme-toggle .icon-moon,
+      [data-theme="light"] .theme-toggle .icon-sun {
+        display: none;
+      }
+
       /* hero */
       header {
         padding: 5.5rem 0 3.5rem;
@@ -67,7 +209,7 @@
         padding: 0.35rem 0.85rem;
         border: 1px solid var(--line);
         border-radius: 999px;
-        background: rgba(94, 234, 212, 0.07);
+        background: var(--badge-bg);
         color: var(--accent);
         font-size: 0.78rem;
         letter-spacing: 0.04em;
@@ -111,6 +253,7 @@
         text-decoration: none;
         border: 1px solid var(--line);
         color: var(--text);
+        background: var(--card);
         transition: transform 0.15s ease, border-color 0.15s ease;
       }
       .btn:hover {
@@ -119,7 +262,7 @@
       }
       .btn.primary {
         background: linear-gradient(100deg, var(--accent), var(--accent-2));
-        color: #07110f;
+        color: var(--btn-primary-fg);
         border-color: transparent;
       }
 
@@ -187,7 +330,7 @@
         width: 0.65rem;
         height: 0.65rem;
         border-radius: 50%;
-        background: #33415c;
+        background: var(--dot);
       }
       .term pre {
         margin: 0;
@@ -232,16 +375,33 @@
     </style>
   </head>
   <body>
+    <button
+      type="button"
+      class="theme-toggle"
+      id="theme-toggle"
+      aria-label="Switch to light mode"
+      title="Toggle theme"
+    >
+      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3a7 7 0 1 0 11.5 11.5z" />
+      </svg>
+    </button>
+
     <div class="wrap">
       <header>
-        <span class="badge">Live demo · A2A sever is running right now</span>
-        <h1>The Agent2Agent protocol,<br /><span class="grad">without the overwhelm</span></h1>
+        <span class="badge">Live demo · A2A server is running right now</span>
+        <h1>Learn the Agent2Agent protocol,<br /><span class="grad">without the overwhelm</span></h1>
         <p class="lead">
-          The official documentation at
+          The Agent2Agent (A2A) protocol is becoming the industry standard for
+          how AI agents talk to each other. The official documentation at
           <a href="https://a2a-protocol.org/">a2a-protocol.org</a> is great and thorough — and
           a lot to take in when you are just starting out. This is the opposite:
           <strong>one server, one client, roughly 100 lines each</strong>, doing one
-          honest round trip so you can see what A2A actually is.
+          full round trip so you can see what A2A actually is.
         </p>
         <div class="cta">
           <a class="btn primary" href="https://github.com/ajerni/A2A">Get the code</a>
@@ -383,6 +543,28 @@ artifact=wallet_addresses
     <script>
       document.getElementById("live-cmd").textContent =
         "A2A_URL=" + window.location.origin + " uv run python A2A/client.py Hi there";
+
+      (function () {
+        var root = document.documentElement;
+        var btn = document.getElementById("theme-toggle");
+
+        function syncLabel() {
+          var light = root.getAttribute("data-theme") === "light";
+          btn.setAttribute(
+            "aria-label",
+            light ? "Switch to dark mode" : "Switch to light mode"
+          );
+        }
+
+        syncLabel();
+        btn.addEventListener("click", function () {
+          var next =
+            root.getAttribute("data-theme") === "light" ? "dark" : "light";
+          root.setAttribute("data-theme", next);
+          localStorage.setItem("theme", next);
+          syncLabel();
+        });
+      })();
     </script>
   </body>
 </html>
