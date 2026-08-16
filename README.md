@@ -1,67 +1,46 @@
-# A2A Course Directory Overview
-This repository is a step-by-step A2A Protocol course. Each folder focuses on one concept and includes runnable examples.
+# A2A
 
-A2A Protocol (GitHub): https://github.com/a2a-protocol
+A first A2A agent: the client sends a text message, the server always completes a **task** with a thank-you **status message** and a **structured artifact** (ETH + BTC addresses). The reply shape is the same even if you send no text.
 
-## Directories
+## How they work together
 
-Folder numbers follow the course teaching order. Modules 07–10 together cover
-"task updates" (the four ways to follow a long-running task).
+1. The server advertises itself with an **AgentCard** at `http://localhost:8001` (REST / HTTP+JSON).
+2. The client fetches that card, then opens an A2A client on the advertised interface.
+3. The client sends a `SendMessageRequest` with a user `Message` (CLI args joined into one string, or empty).
+4. The server’s executor reads the text (or `(empty)`), builds a completed `Task`, and returns:
+   - **status message** — thanks you, repeats what you sent, and points at the artifact
+   - **artifact** `wallet_addresses` — a JSON dict `{ "ETH": "...", "BTC": "..." }` (constants in `A2A/server.py`)
+5. The client prints the status text and the artifact payload.
 
-### 01_Message
-Basic message structure, roles, and content parts.
+```
+client.py  --discover AgentCard-->  server.py
+           --SendMessage--------->
+           <--completed Task------  (status message + artifact)
+```
 
-### 02_Transports_Discovery
-Transports and AgentCard discovery via well-known endpoints.
 
-### 03_Task_Lifecycle
-Task creation, status updates, and lifecycle events.
+## Setup
 
-### 04_Configuration
-Client and server configuration patterns.
+Once from the repo root (creates `.venv` and installs dependencies):
 
-### 05_StructuredData
-Structured output and typed payloads.
+```bash
+uv sync
+```
 
-### 06_FileExchange
-File and artifact exchange via tasks.
+`uv run` always uses this project's `.venv`. You do not need to `source .venv/bin/activate`.
+If an old `.venv` is running type this command in terminal first: `deactivate`.
 
-### 07_Polling
-Polling flow for task updates.
+## Run
 
-### 08_Streaming
-Streaming updates and incremental responses.
+From the repo root. Server:
 
-### 09_Resubscribe
-Resubscribe to a running task after a dropped connection.
+```bash
+uv run python A2A/server.py
+```
 
-### 10_PushNotifications
-Push notifications (webhooks) for task updates.
+Client (another terminal), with text or without — same reply shape:
 
-### 11_MultiTurn_Context
-Multi-turn conversations and context handling.
-
-### 12_ListTasks
-Listing and filtering tasks.
-
-### 13_CancelTasks
-Task cancellation and cleanup.
-
-### 14_ErrorHandling
-The A2A error catalog and how each error maps onto every transport
-(HTTP / JSON-RPC / gRPC). Minimal server + client that provoke and inspect errors.
-
-### 15_Security_Auth
-Authentication and authorization flows (Auth0).
-
-### 16_Capstone_Orchestrator
-Capstone orchestrator that routes to sub-agents.
-
-### 17_Advanced_Versioning
-Protocol versioning and compatibility.
-
-### 18_Advanced_ExtendedCard
-Extended AgentCard endpoints and auth.
-
-### 19_Advanced_Extensions
-Protocol extensions and custom metadata.
+```bash
+uv run python A2A/client.py Hello from A2A
+uv run python A2A/client.py
+```

@@ -30,7 +30,7 @@ grpc = [
 ]
 
 [[package]]
-name = "a2a-udemy-course"
+name = "a2a-server"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

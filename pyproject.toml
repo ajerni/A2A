@@ -1,7 +1,7 @@
 [project]
-name = "a2a-udemy-course"
+name = "a2a-server"
 version = "0.1.0"
-description = "Repo A2A Udemy Course"
+description = "Minimal A2A agent: thank-you status and wallet-address artifact"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

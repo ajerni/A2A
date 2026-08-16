@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A2A Demo</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #0f1419;
+        --card: #1a2332;
+        --text: #e8eef6;
+        --muted: #9aa8b8;
+        --accent: #6ee7b7;
+        --line: #2a3648;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.55;
+      }
+      main {
+        max-width: 46rem;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem 4rem;
+      }
+      h1 {
+        font-size: 1.75rem;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.5rem;
+      }
+      h2 {
+        font-size: 1.05rem;
+        margin: 2rem 0 0.6rem;
+      }
+      p,
+      li {
+        color: var(--muted);
+      }
+      strong {
+        color: var(--text);
+      }
+      a {
+        color: var(--accent);
+      }
+      .lead {
+        font-size: 1.05rem;
+        margin-top: 0;
+      }
+      ol {
+        padding-left: 1.2rem;
+      }
+      pre {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 0.9rem 1rem;
+        overflow-x: auto;
+        font-size: 0.85rem;
+        color: var(--text);
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.88em;
+      }
+      .flow {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 1rem 1.1rem;
+        white-space: pre;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.82rem;
+        color: var(--accent);
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>A2A Demo</h1>
+      <p class="lead">
+        This is a tiny
+        <a href="https://github.com/a2a-protocol">Agent2Agent (A2A)</a>
+        example. A client sends a text message; the server always finishes a
+        <strong>task</strong> with a thank-you <strong>status message</strong>
+        and a <strong>structured artifact</strong> (ETH + BTC addresses).
+      </p>
+      <p>
+        The reply shape is the same even if you send no text. Opening this page
+        (<code>/</code>) is not part of the protocol — it is only a human
+        explanation. Agents discover the server via the AgentCard.
+      </p>
+
+      <h2>How it works</h2>
+      <ol>
+        <li>
+          The server advertises itself with an
+          <a href="/.well-known/agent-card.json">AgentCard</a>
+          (REST / HTTP+JSON) at this origin.
+        </li>
+        <li>
+          <code>A2A/client.py</code> fetches that card, then opens an A2A client
+          on the advertised interface.
+        </li>
+        <li>
+          The client sends a <code>SendMessageRequest</code> with a user
+          <code>Message</code> (CLI args joined into one string, or empty).
+        </li>
+        <li>
+          The server reads the text (or <code>(empty)</code>), builds a completed
+          <code>Task</code>, and returns:
+          <ul>
+            <li>
+              <strong>status message</strong> — thanks you, repeats what you
+              sent, and points at the artifact
+            </li>
+            <li>
+              <strong>artifact</strong> <code>wallet_addresses</code> — JSON
+              <code>{ "ETH": "...", "BTC": "..." }</code> from constants in
+              <code>A2A/server.py</code>
+            </li>
+          </ul>
+        </li>
+        <li>The client prints the status text and the artifact payload.</li>
+      </ol>
+
+      <p class="flow">client.py  --discover AgentCard--&gt;  server.py
+           --SendMessage---------&gt;
+           &lt;--completed Task------  (status message + artifact)</p>
+
+      <h2>Run</h2>
+      <p>From the repo root. This server is already the first command:</p>
+      <pre>uv run python A2A/server.py</pre>
+      <p>In another terminal, with text or without — same reply shape:</p>
+      <pre>uv run python A2A/client.py Hello from A2A
+uv run python A2A/client.py</pre>
+    </main>
+  </body>
+</html>
