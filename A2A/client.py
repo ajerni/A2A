@@ -2,10 +2,12 @@
 
     uv run python A2A/client.py
     uv run python A2A/client.py Hello from A2A
+    A2A_URL=https://example.com uv run python A2A/client.py Hello from A2A
 """
 
 import asyncio
 import json
+import os
 import sys
 
 import httpx
@@ -16,7 +18,7 @@ from a2a.client.card_resolver import A2ACardResolver
 from a2a.helpers import get_message_text, new_text_message
 from a2a.types import Role, SendMessageRequest
 
-BASE_URL = "http://localhost:8001"
+BASE_URL = os.environ.get("A2A_URL", "http://localhost:8001")
 
 
 async def main() -> None:

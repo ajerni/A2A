@@ -87,7 +87,7 @@
         color: transparent;
       }
       .lead {
-        max-width: 38rem;
+        max-width: 52rem;
         margin: 1.35rem 0 0;
         font-size: 1.12rem;
         color: var(--muted);
@@ -135,7 +135,13 @@
       .sub {
         color: var(--muted);
         margin: 0 0 1.75rem;
-        max-width: 40rem;
+        max-width: none;
+        white-space: nowrap;
+      }
+      @media (max-width: 52rem) {
+        .sub {
+          white-space: normal;
+        }
       }
       .grid {
         display: grid;
@@ -199,11 +205,21 @@
       .term .out {
         color: var(--muted);
       }
-      .split {
+      .try {
         display: grid;
         gap: 1.25rem;
         grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
         align-items: start;
+      }
+      .try h3 {
+        margin: 0 0 0.35rem;
+        font-size: 1.05rem;
+      }
+      .try .hint {
+        color: var(--muted);
+        margin: 0 0 0.9rem;
+        font-size: 0.94rem;
+        white-space: normal;
       }
 
       footer {
@@ -218,7 +234,7 @@
   <body>
     <div class="wrap">
       <header>
-        <span class="badge">Live demo · running right now</span>
+        <span class="badge">Live demo · A2A sever is running right now</span>
         <h1>The Agent2Agent protocol,<br /><span class="grad">without the overwhelm</span></h1>
         <p class="lead">
           The official documentation at
@@ -239,19 +255,23 @@
           Most A2A material starts with the full spec: transports, streaming,
           push notifications, task lifecycles. Useful later. Confusing on day one.
         </p>
+        <p class="sub">
+          What you get here is the core of the A2A protocol:
+        </p>
         <div class="grid">
           <div class="card">
             <h3>Small enough to read</h3>
             <p>
-              No framework layers, no orchestration, no LLM. Two files you can read
-              top to bottom in a coffee break.
+              No framework layers, no orchestration, no LLM. <a href="https://github.com/ajerni/A2A/tree/main/A2A" target="_blank">Two files you can read</a>
+         
+              top to bottom in a coffee break. This is the core of the A2A protocol.
             </p>
           </div>
           <div class="card">
-            <h3>Always the same answer</h3>
+            <h3>Get results from A2A servers</h3>
             <p>
-              The agent ignores what you send and replies identically every time —
-              so nothing distracts from the protocol mechanics.
+              You see both halves of a completed task in one reply: a human-readable
+              status message, and structured data shipped as an artifact. This is an important learning: the results of an A2A server have to be in the artifacts, not in the status message.
             </p>
           </div>
           <div class="card">
@@ -284,8 +304,7 @@
             <span class="step">STEP 02</span>
             <h3>Send</h3>
             <p>
-              It sends one message. Text is optional — send nothing and the shape of
-              the reply does not change.
+              The client sends a message to the servers interface which it found in the AgentCard.
             </p>
           </div>
           <div class="card">
@@ -300,22 +319,40 @@
       </section>
 
       <section>
-        <h2>Try it in two commands</h2>
+        <h2>Try it</h2>
         <p class="sub">
-          You are already looking at step one — this page is served by the running
-          agent. Open a second terminal for the client.
+          Two ways in. Local starts both sides. Live only needs the client — this
+          site already is the server.
         </p>
-        <div class="split">
-          <div class="term">
-            <div class="term-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
-            <pre><span class="cmd">uv run python A2A/server.py</span>
+        <div class="try">
+          <div>
+            <h3>Local</h3>
+            <p class="hint">
+              Clone the repo. Start the server in one terminal, then talk to it
+              with the client in another.
+            </p>
+            <div class="term">
+              <div class="term-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+              <pre><span class="out"># terminal 1 — start the agent</span>
+<span class="cmd">uv run python A2A/server.py</span>
 <span class="out">Uvicorn running on http://localhost:8001</span>
 
-<span class="cmd">uv run python A2A/client.py Hi there</span></pre>
+<span class="out"># terminal 2 — send a message</span>
+<span class="cmd">uv run python A2A/client.py Hi there</span>
+<span class="out">Thanks for your message: 'Hi there'.
+The result is in the artifact.</span></pre>
+            </div>
           </div>
-          <div class="term">
-            <div class="term-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
-            <pre><span class="out">Thanks for your message: 'Hi there'.
+          <div>
+            <h3>Live</h3>
+            <p class="hint">
+              This page is already served by the running agent. Clone the repo
+              and run only the client, pointed at this origin.
+            </p>
+            <div class="term">
+              <div class="term-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+              <pre><span class="cmd" id="live-cmd">A2A_URL=http://localhost:8001 uv run python A2A/client.py Hi there</span>
+<span class="out">Thanks for your message: 'Hi there'.
 The result is in the artifact.
 
 artifact=wallet_addresses
@@ -323,13 +360,13 @@ artifact=wallet_addresses
   "BTC": "bc1q…",
   "ETH": "0xFF…"
 }</span></pre>
+            </div>
           </div>
         </div>
       </section>
 
       <footer>
         <p>
-          Built on the <a href="https://github.com/a2a-protocol">A2A Python SDK</a>.
           This page itself is not part of the protocol — agents never open it, they
           read the <a href="/.well-known/agent-card.json">AgentCard</a> instead.
         </p>
@@ -339,5 +376,9 @@ artifact=wallet_addresses
         </p>
       </footer>
     </div>
+    <script>
+      document.getElementById("live-cmd").textContent =
+        "A2A_URL=" + location.origin + " uv run python A2A/client.py Hi there";
+    </script>
   </body>
 </html>
