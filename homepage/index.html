@@ -128,6 +128,8 @@
       }
       html {
         scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
       }
       body {
         margin: 0;
@@ -135,6 +137,7 @@
         color: var(--text);
         font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
         line-height: 1.6;
+        overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
         transition: background 0.2s ease, color 0.2s ease;
       }
@@ -151,7 +154,7 @@
         position: relative;
         max-width: 64rem;
         margin: 0 auto;
-        padding: 0 1.5rem;
+        padding: max(0.5rem, env(safe-area-inset-top, 0px)) max(1.25rem, env(safe-area-inset-right, 0px)) 0 max(1.25rem, env(safe-area-inset-left, 0px));
       }
       a {
         color: var(--accent);
@@ -162,10 +165,7 @@
       }
 
       .theme-toggle {
-        position: fixed;
-        top: 1rem;
-        right: 1rem;
-        z-index: 20;
+        flex-shrink: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -200,12 +200,19 @@
 
       /* hero */
       header {
-        padding: 5.5rem 0 3.5rem;
+        padding: 3.25rem 0 3rem;
+      }
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
       }
       .badge {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
+        max-width: calc(100% - 3.5rem);
         padding: 0.35rem 0.85rem;
         border: 1px solid var(--line);
         border-radius: 999px;
@@ -214,6 +221,7 @@
         font-size: 0.78rem;
         letter-spacing: 0.04em;
         text-transform: uppercase;
+        white-space: normal;
       }
       h1 {
         margin: 1.25rem 0 0;
@@ -221,6 +229,7 @@
         line-height: 1.08;
         letter-spacing: -0.03em;
         font-weight: 680;
+        overflow-wrap: break-word;
       }
       h1 .grad {
         background: linear-gradient(100deg, var(--accent), var(--accent-2));
@@ -233,6 +242,7 @@
         margin: 1.35rem 0 0;
         font-size: 1.12rem;
         color: var(--muted);
+        overflow-wrap: break-word;
       }
       .lead strong {
         color: var(--text);
@@ -279,17 +289,15 @@
         color: var(--muted);
         margin: 0 0 1.75rem;
         max-width: none;
-        white-space: nowrap;
-      }
-      @media (max-width: 52rem) {
-        .sub {
-          white-space: normal;
-        }
       }
       .grid {
         display: grid;
         gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+      }
+      .grid > *,
+      .try > * {
+        min-width: 0;
       }
       .card {
         background: var(--card);
@@ -305,6 +313,7 @@
         margin: 0;
         color: var(--muted);
         font-size: 0.94rem;
+        overflow-wrap: break-word;
       }
       .step {
         color: var(--accent);
@@ -319,6 +328,7 @@
         border: 1px solid var(--line);
         border-radius: 14px;
         overflow: hidden;
+        max-width: 100%;
       }
       .term-bar {
         display: flex;
@@ -388,7 +398,7 @@
       .try {
         display: grid;
         gap: 1.25rem;
-        grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr));
         align-items: start;
       }
       .try h3 {
@@ -402,35 +412,167 @@
         white-space: normal;
       }
 
+      .map-wrap {
+        margin: 0 0 2rem;
+        padding: 1.1rem 0.75rem 0.6rem;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+      }
+      .map {
+        display: block;
+        width: 100%;
+        max-width: 44rem;
+        height: auto;
+        margin: 0 auto;
+      }
+      .map-mobile {
+        display: none;
+        max-width: 26rem;
+      }
+      .map .panel {
+        fill: var(--bg);
+        stroke: var(--line);
+      }
+      .map .agent-panel {
+        fill: var(--badge-bg);
+        stroke: var(--accent-2);
+        stroke-width: 1.75;
+      }
+      .map .card-panel {
+        fill: var(--bg);
+        stroke: var(--accent);
+        stroke-width: 2;
+      }
+      .map .label {
+        fill: var(--text);
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 650;
+      }
+      .map .small {
+        fill: var(--muted);
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 12px;
+      }
+      .map .flow {
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 2;
+        marker-end: url(#arrow);
+      }
+      .map .flow-back {
+        stroke: var(--accent-2);
+        marker-end: url(#arrow2);
+      }
+      .map-mobile .flow {
+        marker-end: url(#arrow-m);
+      }
+      .map-mobile .flow-back {
+        marker-end: url(#arrow2-m);
+      }
+      .map-mobile .label {
+        font-size: 16px;
+      }
+      .map-mobile .small {
+        font-size: 13px;
+      }
+
       footer {
         border-top: 1px solid var(--line);
         margin-top: 2rem;
-        padding: 2rem 0 3rem;
+        padding: 2rem 0 max(3rem, env(safe-area-inset-bottom, 0px));
         color: var(--muted);
         font-size: 0.9rem;
+      }
+
+      @media (max-width: 40rem) {
+        header {
+          padding: 1.75rem 0 2rem;
+        }
+        h1 {
+          font-size: clamp(1.7rem, 8.5vw, 2.4rem);
+        }
+        .lead {
+          font-size: 1.02rem;
+        }
+        .cta {
+          flex-direction: column;
+        }
+        .cta .btn {
+          width: 100%;
+          text-align: center;
+        }
+        section {
+          padding: 2rem 0;
+        }
+        h2 {
+          font-size: 1.3rem;
+        }
+        .map-desktop {
+          display: none;
+        }
+        .map-mobile {
+          display: block;
+        }
+        .map-wrap {
+          padding: 0.75rem 0.35rem 0.45rem;
+        }
+        .term-body {
+          font-size: 0.75rem;
+          padding: 0.9rem 0.8rem;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        .copy-btn {
+          min-height: 2.25rem;
+          padding: 0.3rem 0.55rem;
+        }
+      }
+
+      @media (max-width: 24rem) {
+        .wrap {
+          padding-left: max(0.9rem, env(safe-area-inset-left, 0px));
+          padding-right: max(0.9rem, env(safe-area-inset-right, 0px));
+        }
+        .badge {
+          font-size: 0.7rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        body,
+        .theme-toggle,
+        .btn {
+          transition: none;
+        }
       }
     </style>
   </head>
   <body>
-    <button
-      type="button"
-      class="theme-toggle"
-      id="theme-toggle"
-      aria-label="Switch to light mode"
-      title="Toggle theme"
-    >
-      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-      </svg>
-      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3a7 7 0 1 0 11.5 11.5z" />
-      </svg>
-    </button>
-
     <div class="wrap">
       <header>
-        <span class="badge">Live demo · A2A server is running right now</span>
+        <div class="topbar">
+          <span class="badge">Live demo · A2A server is running right now</span>
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Switch to light mode"
+            title="Toggle theme"
+          >
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3a7 7 0 1 0 11.5 11.5z" />
+            </svg>
+          </button>
+        </div>
         <h1>Learn the Agent2Agent protocol,<br /><span class="grad">without the overwhelm</span></h1>
         <p class="lead">
           The Agent2Agent (A2A) protocol is becoming the industry standard for
@@ -487,6 +629,85 @@
           That is the whole protocol surface this demo touches. Everything else in
           A2A is built on top of these three moments.
         </p>
+        <div class="map-wrap">
+          <svg class="map map-desktop" viewBox="0 0 640 250" role="img" aria-labelledby="map-title map-desc">
+            <title id="map-title">How a client talks to an A2A agent</title>
+            <desc id="map-desc">
+              The client reads the AgentCard, sends a message, and gets a message back
+              with a task and an artifact.
+            </desc>
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)" />
+              </marker>
+              <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent-2)" />
+              </marker>
+            </defs>
+            <!-- Client -->
+            <rect class="panel" x="24" y="78" width="150" height="110" rx="14" />
+            <text class="label" x="99" y="128" text-anchor="middle">Client</text>
+            <text class="small" x="99" y="150" text-anchor="middle">your calling Agent</text>
+            <!-- Agent (behind AgentCard) -->
+            <rect class="agent-panel" x="455" y="52" width="160" height="176" rx="14" />
+            <text class="label" x="548" y="108" text-anchor="middle">Agent</text>
+            <rect class="panel" x="480" y="120" width="110" height="40" rx="8" />
+            <text class="small" x="535" y="145" text-anchor="middle">Task</text>
+            <path class="flow flow-back" d="M 535 160 L 535 168" />
+            <rect class="panel" x="480" y="174" width="110" height="42" rx="8" />
+            <text class="small" x="535" y="200" text-anchor="middle">Artifact</text>
+            <!-- 2 Send / 3 Receive -->
+            <path class="flow" d="M 174 118 L 455 118" />
+            <text class="small" x="314" y="108" text-anchor="middle">2. Message →</text>
+            <path class="flow flow-back" d="M 455 188 L 174 188" />
+            <text class="small" x="314" y="210" text-anchor="middle">3. ← Message</text>
+            <!-- AgentCard on top, overlapping Agent -->
+            <rect class="card-panel" x="392" y="22" width="148" height="54" rx="12" />
+            <text class="label" x="466" y="55" text-anchor="middle">AgentCard</text>
+            <!-- 1 Read — stops at the card border so the arrowhead stays visible -->
+            <path class="flow" d="M 99 78 L 99 49 L 390 49" />
+            <text class="small" x="220" y="41" text-anchor="middle">1. Read</text>
+          </svg>
+          <svg class="map map-mobile" viewBox="0 0 400 520" role="img" aria-labelledby="map-title-m map-desc-m">
+            <title id="map-title-m">How a client talks to an A2A agent</title>
+            <desc id="map-desc-m">
+              The client reads the AgentCard, sends a message, and gets a message back
+              with a task and an artifact.
+            </desc>
+            <defs>
+              <marker id="arrow-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)" />
+              </marker>
+              <marker id="arrow2-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent-2)" />
+              </marker>
+            </defs>
+            <!-- Client -->
+            <rect class="panel" x="125" y="18" width="150" height="92" rx="14" />
+            <text class="label" x="200" y="58" text-anchor="middle">Client</text>
+            <text class="small" x="200" y="80" text-anchor="middle">your calling Agent</text>
+            <!-- Agent (behind AgentCard) -->
+            <rect class="agent-panel" x="120" y="248" width="160" height="200" rx="14" />
+            <text class="label" x="200" y="292" text-anchor="middle">Agent</text>
+            <rect class="panel" x="145" y="310" width="110" height="40" rx="8" />
+            <text class="small" x="200" y="335" text-anchor="middle">Task</text>
+            <path class="flow flow-back" d="M 200 350 L 200 358" />
+            <rect class="panel" x="145" y="364" width="110" height="42" rx="8" />
+            <text class="small" x="200" y="390" text-anchor="middle">Artifact</text>
+            <!-- AgentCard on top, overlapping Agent -->
+            <rect class="card-panel" x="126" y="216" width="148" height="52" rx="12" />
+            <text class="label" x="200" y="248" text-anchor="middle">AgentCard</text>
+            <!-- 1 Read — Client down to AgentCard -->
+            <path class="flow" d="M 200 110 L 200 214" />
+            <text class="small" x="258" y="168" text-anchor="middle">1. Read</text>
+            <!-- 2 Send — left side into Agent -->
+            <path class="flow" d="M 125 70 L 48 70 L 48 300 L 112 300" />
+            <text class="small" x="48" y="56" text-anchor="middle">2. Message</text>
+            <!-- 3 Receive — from Artifact side back to Client -->
+            <path class="flow flow-back" d="M 280 385 L 352 385 L 352 64 L 277 64" />
+            <text class="small" x="352" y="408" text-anchor="middle">3. Message</text>
+          </svg>
+        </div>
         <div class="grid">
           <div class="card">
             <span class="step">STEP 01</span>
