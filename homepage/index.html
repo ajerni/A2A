@@ -324,15 +324,47 @@
         display: flex;
         align-items: center;
         gap: 0.4rem;
-        padding: 0.55rem 0.75rem 0.55rem 0.9rem;
+        padding: 0.55rem 0.9rem;
         border-bottom: 1px solid var(--line);
       }
       .term-dots {
         display: flex;
         gap: 0.4rem;
-        margin-right: auto;
+      }
+      .term-body {
+        margin: 0;
+        padding: 1.1rem 1.2rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.85rem;
+        line-height: 1.7;
+        color: var(--text);
+      }
+      .term .out {
+        color: var(--muted);
+        white-space: pre-wrap;
+      }
+      .term .out + .out {
+        margin-top: 0.15rem;
+      }
+      .term .gap {
+        margin-top: 0.85rem;
+      }
+      .cmd-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.55rem;
+        margin: 0.1rem 0 0.15rem;
+      }
+      .term .cmd {
+        flex: 1;
+        min-width: 0;
+        color: var(--accent);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
       }
       .copy-btn {
+        flex-shrink: 0;
+        margin-top: 0.12rem;
         border: 1px solid var(--line);
         border-radius: 7px;
         background: transparent;
@@ -340,7 +372,7 @@
         font-size: 0.75rem;
         font-weight: 600;
         letter-spacing: 0.02em;
-        padding: 0.28rem 0.55rem;
+        padding: 0.2rem 0.5rem;
         cursor: pointer;
       }
       .copy-btn:hover {
@@ -352,22 +384,6 @@
         height: 0.65rem;
         border-radius: 50%;
         background: var(--dot);
-      }
-      .term pre {
-        margin: 0;
-        padding: 1.1rem 1.2rem;
-        white-space: pre-wrap;
-        overflow-wrap: anywhere;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 0.85rem;
-        line-height: 1.7;
-        color: var(--text);
-      }
-      .term .cmd {
-        color: var(--accent);
-      }
-      .term .out {
-        color: var(--muted);
       }
       .try {
         display: grid;
@@ -516,16 +532,22 @@
             <div class="term">
               <div class="term-bar">
                 <span class="term-dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i></span>
-                <button type="button" class="copy-btn">Copy</button>
               </div>
-              <pre><span class="out"># terminal 1 — start the agent</span>
-<span class="cmd">uv run python A2A/server.py</span>
-<span class="out">Uvicorn running on http://localhost:8001</span>
-
-<span class="out"># terminal 2 — send a message</span>
-<span class="cmd">uv run python A2A/client.py Hi there</span>
-<span class="out">Thanks for your message: 'Hi there'.
-The result is in the artifact.</span></pre>
+              <div class="term-body">
+                <div class="out"># terminal 1 — start the agent</div>
+                <div class="cmd-row">
+                  <span class="cmd">uv run python A2A/server.py</span>
+                  <button type="button" class="copy-btn">Copy</button>
+                </div>
+                <div class="out">Uvicorn running on http://localhost:8001</div>
+                <div class="out gap"># terminal 2 — send a message</div>
+                <div class="cmd-row">
+                  <span class="cmd">uv run python A2A/client.py Hi there</span>
+                  <button type="button" class="copy-btn">Copy</button>
+                </div>
+                <div class="out">Thanks for your message: 'Hi there'.
+The result is in the artifact.</div>
+              </div>
             </div>
           </div>
           <div>
@@ -538,17 +560,21 @@ The result is in the artifact.</span></pre>
             <div class="term">
               <div class="term-bar">
                 <span class="term-dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i></span>
-                <button type="button" class="copy-btn">Copy</button>
               </div>
-              <pre><span class="cmd" id="live-cmd">A2A_URL=https://learn-a2a.com uv run python A2A/client.py Hi there</span>
-<span class="out">Thanks for your message: 'Hi there'.
+              <div class="term-body">
+                <div class="cmd-row">
+                  <span class="cmd" id="live-cmd">A2A_URL=https://learn-a2a.com uv run python A2A/client.py Hi there</span>
+                  <button type="button" class="copy-btn">Copy</button>
+                </div>
+                <div class="out">Thanks for your message: 'Hi there'.
 The result is in the artifact.
 
 artifact=wallet_addresses
 {
   "BTC": "bc1q…",
   "ETH": "0xFF…"
-}</span></pre>
+}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -574,16 +600,11 @@ artifact=wallet_addresses
       document.getElementById("live-cmd").textContent =
         "A2A_URL=" + window.location.origin + " uv run python A2A/client.py Hi there";
 
-      document.querySelectorAll(".term").forEach(function (term) {
-        var copyBtn = term.querySelector(".copy-btn");
-        if (!copyBtn) return;
+      document.querySelectorAll(".copy-btn").forEach(function (copyBtn) {
         copyBtn.addEventListener("click", function () {
-          var text = Array.prototype.map
-            .call(term.querySelectorAll(".cmd"), function (el) {
-              return el.textContent.trim();
-            })
-            .join("\n");
-          navigator.clipboard.writeText(text).then(function () {
+          var cmd = copyBtn.parentElement.querySelector(".cmd");
+          if (!cmd) return;
+          navigator.clipboard.writeText(cmd.textContent.trim()).then(function () {
             copyBtn.textContent = "Copied";
             setTimeout(function () {
               copyBtn.textContent = "Copy";
