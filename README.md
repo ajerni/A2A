@@ -1,4 +1,4 @@
-# A2A education - Philantrophy Agent
+# A2A education - Philantropy Agent
 
 An educational A2A demo that helps people learning how the A2A protocol works.
 
