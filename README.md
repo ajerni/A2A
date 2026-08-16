@@ -8,7 +8,7 @@ The client sends a text message, the server always completes a **task** with a t
 
 ## How they work together
 
-1. The server advertises itself with an **AgentCard** at `http://localhost:8001` (REST / HTTP+JSON).
+1. The server advertises itself with an **AgentCard** at `http://localhost:8001/.well-known/agent-card.json`.
 2. The client fetches that card, then opens an A2A client on the advertised interface.
 3. The client sends a `SendMessageRequest` with a user `Message` (CLI args joined into one string, or empty).
 4. The server’s executor reads the text (or `(empty)`), builds a completed `Task`, and returns:
@@ -40,6 +40,8 @@ From the repo root. Server:
 ```bash
 uv run python A2A/server.py
 ```
+
+TODO: OR live served here: https://xxx.com
 
 Client (another terminal), with text or without — same reply shape:
 
