@@ -48,6 +48,9 @@ async def main() -> None:
             async for reply in client.send_message(request):
                 task = reply.task if reply.HasField("task") else reply
 
+                # uncomment this to print the whole task
+                # print(f"task={task}")
+
                 if task.status.HasField("message"):
                     print(get_message_text(task.status.message))
 
