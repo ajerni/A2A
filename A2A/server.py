@@ -88,7 +88,7 @@ class WalletExecutor(AgentExecutor):
 
 
 card = AgentCard(
-    name="Philantropy Agent - A2A server looking for crypto donations.",
+    name="Philanthropy Agent - A2A server looking for crypto donations.",
     description="Educates humans on A2A protocol and returns ETH/BTC addresses in an artifact for donations.",
     version="0.1.0",
     supported_interfaces=[
