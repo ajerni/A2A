@@ -1,6 +1,10 @@
-# A2A
+# A2A education - Philantrophy Agent
 
-A first A2A agent: the client sends a text message, the server always completes a **task** with a thank-you **status message** and a **structured artifact** (ETH + BTC addresses). The reply shape is the same even if you send no text.
+An educational A2A demo that helps people learning how the A2A protocol works.
+
+Here is what this live Demo does:
+
+The client sends a text message, the server always completes a **task** with a thank-you **status message** and a **structured artifact** (ETH + BTC addresses).
 
 ## How they work together
 
@@ -17,7 +21,6 @@ client.py  --discover AgentCard-->  server.py
            --SendMessage--------->
            <--completed Task------  (status message + artifact)
 ```
-
 
 ## Setup
 

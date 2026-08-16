@@ -1,7 +1,5 @@
 """Minimal A2A agent: thank-you status + wallet-address artifact.
 
-Always returns the same shape of reply, even when the client sends no text.
-
 Run:  uv run python A2A/server.py
 """
 

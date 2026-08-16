@@ -3,144 +3,341 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>A2A Demo</title>
+    <title>A2A by example — the Agent2Agent protocol, without the overwhelm</title>
+    <meta
+      name="description"
+      content="A tiny, runnable Agent2Agent (A2A) demo for beginners. One server, one client, about 100 lines each."
+    />
     <style>
       :root {
-        color-scheme: light dark;
-        --bg: #0f1419;
-        --card: #1a2332;
-        --text: #e8eef6;
-        --muted: #9aa8b8;
-        --accent: #6ee7b7;
-        --line: #2a3648;
+        --bg: #080b12;
+        --bg-soft: #0e1420;
+        --card: #121a28;
+        --line: #22304a;
+        --text: #eaf1fa;
+        --muted: #93a4bd;
+        --accent: #5eead4;
+        --accent-2: #818cf8;
       }
       * {
         box-sizing: border-box;
       }
+      html {
+        scroll-behavior: smooth;
+      }
       body {
         margin: 0;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
         background: var(--bg);
         color: var(--text);
-        line-height: 1.55;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
       }
-      main {
-        max-width: 46rem;
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(50rem 30rem at 15% -10%, rgba(94, 234, 212, 0.13), transparent 60%),
+          radial-gradient(45rem 28rem at 90% 5%, rgba(129, 140, 248, 0.14), transparent 60%);
+      }
+      .wrap {
+        position: relative;
+        max-width: 64rem;
         margin: 0 auto;
-        padding: 2.5rem 1.25rem 4rem;
-      }
-      h1 {
-        font-size: 1.75rem;
-        font-weight: 650;
-        letter-spacing: -0.02em;
-        margin: 0 0 0.5rem;
-      }
-      h2 {
-        font-size: 1.05rem;
-        margin: 2rem 0 0.6rem;
-      }
-      p,
-      li {
-        color: var(--muted);
-      }
-      strong {
-        color: var(--text);
+        padding: 0 1.5rem;
       }
       a {
         color: var(--accent);
       }
-      .lead {
-        font-size: 1.05rem;
-        margin-top: 0;
-      }
-      ol {
-        padding-left: 1.2rem;
-      }
-      pre {
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 0.9rem 1rem;
-        overflow-x: auto;
-        font-size: 0.85rem;
-        color: var(--text);
-      }
       code {
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 0.88em;
+        font-size: 0.9em;
       }
-      .flow {
+
+      /* hero */
+      header {
+        padding: 5.5rem 0 3.5rem;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.85rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(94, 234, 212, 0.07);
+        color: var(--accent);
+        font-size: 0.78rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 1.25rem 0 0;
+        font-size: clamp(2.2rem, 6vw, 3.6rem);
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+        font-weight: 680;
+      }
+      h1 .grad {
+        background: linear-gradient(100deg, var(--accent), var(--accent-2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .lead {
+        max-width: 38rem;
+        margin: 1.35rem 0 0;
+        font-size: 1.12rem;
+        color: var(--muted);
+      }
+      .lead strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+      .cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 2.25rem;
+      }
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.35rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        border: 1px solid var(--line);
+        color: var(--text);
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        border-color: var(--accent);
+      }
+      .btn.primary {
+        background: linear-gradient(100deg, var(--accent), var(--accent-2));
+        color: #07110f;
+        border-color: transparent;
+      }
+
+      /* sections */
+      section {
+        padding: 3rem 0;
+      }
+      h2 {
+        font-size: 1.5rem;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.6rem;
+      }
+      .sub {
+        color: var(--muted);
+        margin: 0 0 1.75rem;
+        max-width: 40rem;
+      }
+      .grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+      }
+      .card {
         background: var(--card);
         border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 1rem 1.1rem;
-        white-space: pre;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 0.82rem;
+        border-radius: 14px;
+        padding: 1.35rem;
+      }
+      .card h3 {
+        margin: 0 0 0.4rem;
+        font-size: 1rem;
+      }
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+      .step {
         color: var(--accent);
-        overflow-x: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+      }
+
+      /* terminal */
+      .term {
+        background: var(--bg-soft);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .term-bar {
+        display: flex;
+        gap: 0.4rem;
+        padding: 0.7rem 0.9rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .dot {
+        width: 0.65rem;
+        height: 0.65rem;
+        border-radius: 50%;
+        background: #33415c;
+      }
+      .term pre {
+        margin: 0;
+        padding: 1.1rem 1.2rem;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.85rem;
+        line-height: 1.7;
+        color: var(--text);
+      }
+      .term .cmd {
+        color: var(--accent);
+      }
+      .term .out {
+        color: var(--muted);
+      }
+      .split {
+        display: grid;
+        gap: 1.25rem;
+        grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+        align-items: start;
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        margin-top: 2rem;
+        padding: 2rem 0 3rem;
+        color: var(--muted);
+        font-size: 0.9rem;
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>A2A Demo</h1>
-      <p class="lead">
-        This is a tiny
-        <a href="https://github.com/a2a-protocol">Agent2Agent (A2A)</a>
-        example. A client sends a text message; the server always finishes a
-        <strong>task</strong> with a thank-you <strong>status message</strong>
-        and a <strong>structured artifact</strong> (ETH + BTC addresses).
-      </p>
-      <p>
-        The reply shape is the same even if you send no text. Opening this page
-        (<code>/</code>) is not part of the protocol — it is only a human
-        explanation. Agents discover the server via the AgentCard.
-      </p>
+    <div class="wrap">
+      <header>
+        <span class="badge">Live demo · running right now</span>
+        <h1>The Agent2Agent protocol,<br /><span class="grad">without the overwhelm</span></h1>
+        <p class="lead">
+          The official documentation at
+          <a href="https://a2a-protocol.org/">a2a-protocol.org</a> is great and thorough — and
+          a lot to take in when you are just starting out. This is the opposite:
+          <strong>one server, one client, roughly 100 lines each</strong>, doing one
+          honest round trip so you can see what A2A actually is.
+        </p>
+        <div class="cta">
+          <a class="btn primary" href="https://github.com/ajerni/A2A">Get the code</a>
+          <a class="btn" href="/.well-known/agent-card.json">See the live AgentCard</a>
+        </div>
+      </header>
 
-      <h2>How it works</h2>
-      <ol>
-        <li>
-          The server advertises itself with an
-          <a href="/.well-known/agent-card.json">AgentCard</a>
-          (REST / HTTP+JSON) at this origin.
-        </li>
-        <li>
-          <code>A2A/client.py</code> fetches that card, then opens an A2A client
-          on the advertised interface.
-        </li>
-        <li>
-          The client sends a <code>SendMessageRequest</code> with a user
-          <code>Message</code> (CLI args joined into one string, or empty).
-        </li>
-        <li>
-          The server reads the text (or <code>(empty)</code>), builds a completed
-          <code>Task</code>, and returns:
-          <ul>
-            <li>
-              <strong>status message</strong> — thanks you, repeats what you
-              sent, and points at the artifact
-            </li>
-            <li>
-              <strong>artifact</strong> <code>wallet_addresses</code> — JSON
-              <code>{ "ETH": "...", "BTC": "..." }</code> from constants in
-              <code>A2A/server.py</code>
-            </li>
-          </ul>
-        </li>
-        <li>The client prints the status text and the artifact payload.</li>
-      </ol>
+      <section>
+        <h2>Why this exists</h2>
+        <p class="sub">
+          Most A2A material starts with the full spec: transports, streaming,
+          push notifications, task lifecycles. Useful later. Confusing on day one.
+        </p>
+        <div class="grid">
+          <div class="card">
+            <h3>Small enough to read</h3>
+            <p>
+              No framework layers, no orchestration, no LLM. Two files you can read
+              top to bottom in a coffee break.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Always the same answer</h3>
+            <p>
+              The agent ignores what you send and replies identically every time —
+              so nothing distracts from the protocol mechanics.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Real protocol, not pseudo-code</h3>
+            <p>
+              Genuine AgentCard discovery, a real <code>SendMessageRequest</code>,
+              a real completed task with an artifact.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <p class="flow">client.py  --discover AgentCard--&gt;  server.py
-           --SendMessage---------&gt;
-           &lt;--completed Task------  (status message + artifact)</p>
+      <section>
+        <h2>One round trip, start to finish</h2>
+        <p class="sub">
+          That is the whole protocol surface this demo touches. Everything else in
+          A2A is built on top of these three moments.
+        </p>
+        <div class="grid">
+          <div class="card">
+            <span class="step">STEP 01</span>
+            <h3>Discover</h3>
+            <p>
+              The client fetches the
+              <a href="/.well-known/agent-card.json">AgentCard</a> and learns where
+              and how to talk to this agent.
+            </p>
+          </div>
+          <div class="card">
+            <span class="step">STEP 02</span>
+            <h3>Send</h3>
+            <p>
+              It sends one message. Text is optional — send nothing and the shape of
+              the reply does not change.
+            </p>
+          </div>
+          <div class="card">
+            <span class="step">STEP 03</span>
+            <h3>Receive</h3>
+            <p>
+              Back comes a completed task: a status message that thanks you, plus an
+              artifact carrying structured JSON.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <h2>Run</h2>
-      <p>From the repo root. This server is already the first command:</p>
-      <pre>uv run python A2A/server.py</pre>
-      <p>In another terminal, with text or without — same reply shape:</p>
-      <pre>uv run python A2A/client.py Hello from A2A
-uv run python A2A/client.py</pre>
-    </main>
+      <section>
+        <h2>Try it in two commands</h2>
+        <p class="sub">
+          You are already looking at step one — this page is served by the running
+          agent. Open a second terminal for the client.
+        </p>
+        <div class="split">
+          <div class="term">
+            <div class="term-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+            <pre><span class="cmd">uv run python A2A/server.py</span>
+<span class="out">Uvicorn running on http://localhost:8001</span>
+
+<span class="cmd">uv run python A2A/client.py Hi there</span></pre>
+          </div>
+          <div class="term">
+            <div class="term-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+            <pre><span class="out">Thanks for your message: 'Hi there'.
+The result is in the artifact.
+
+artifact=wallet_addresses
+{
+  "BTC": "bc1q…",
+  "ETH": "0xFF…"
+}</span></pre>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <p>
+          Built on the <a href="https://github.com/a2a-protocol">A2A Python SDK</a>.
+          This page itself is not part of the protocol — agents never open it, they
+          read the <a href="/.well-known/agent-card.json">AgentCard</a> instead.
+        </p>
+        <p>
+          Source on <a href="https://github.com/ajerni/A2A">GitHub</a>. And yes, the
+          artifact really does contain donation addresses.
+        </p>
+      </footer>
+    </div>
   </body>
 </html>
