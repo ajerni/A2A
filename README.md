@@ -24,7 +24,7 @@ client.py  --discover AgentCard-->  server.py
 
 ## Setup
 
-Clone this repo into a folder on your local machine:
+Clone this repo:
 
 ```bash
 git clone https://github.com/ajerni/A2A.git
