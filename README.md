@@ -53,3 +53,7 @@ Against the live demo at [learn-a2a.com](https://learn-a2a.com) (no local server
 ```bash
 A2A_URL=https://learn-a2a.com uv run python A2A/client.py Hello from A2A
 ```
+
+## License
+
+Source-available for **personal learning** only. You may clone, run locally, and study the code. You may **not** republish this demo (including swapping the donation addresses) as your own public site. See [LICENSE](LICENSE).

@@ -3,6 +3,7 @@ name = "a2a-server"
 version = "0.1.0"
 description = "Minimal A2A agent: thank-you status and wallet-address artifact"
 readme = "README.md"
+license = { file = "LICENSE" }
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.124.4",
