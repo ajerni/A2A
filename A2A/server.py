@@ -5,9 +5,11 @@ Returns a thank-you status echoing the input text + structured data in an artifa
 Run:  uv run python A2A/server.py
 """
 
+import os
 from pathlib import Path
 
 import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from google.protobuf.struct_pb2 import Value
@@ -29,9 +31,13 @@ from a2a.types import (
 )
 from a2a.utils import TransportProtocol
 
-HOST = "localhost"
-PORT = 8001
-BASE_URL = f"http://{HOST}:{PORT}"
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+
+# Bind address (0.0.0.0 = reachable locally and on a public server).
+# AgentCard URL is separate: clients must get a public origin, not 0.0.0.0.
+HOST = os.environ.get("HOST", "0.0.0.0")
+PORT = int(os.environ.get("PORT", "8001"))
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:8001")
 HOMEPAGE = Path(__file__).resolve().parents[1] / "homepage" / "index.html"
 
 # wallet addresses returned in artifact - these are my real donation addresses 😎
