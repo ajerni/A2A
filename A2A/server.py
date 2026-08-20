@@ -1,4 +1,4 @@
-"""Minimal A2A agent:
+"""Minimal A2A -  server:
 
 Returns a thank-you status echoing the input text + structured data in an artifact.
 

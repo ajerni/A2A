@@ -1,9 +1,10 @@
-"""Minimal A2A client.
+"""Minimal A2A - client:
 
     uv run python A2A/client.py
+    or
     uv run python A2A/client.py Hello from A2A
 
-    or
+    or using with live server:
 
     A2A_URL=https://learn-a2a.com uv run python A2A/client.py Hello from A2A
 """
